@@ -45,24 +45,31 @@ class PlantaService {
 
     async getVenta(id) {
         var sql = `call ver_venta(${id});`;
-        const data = await sequelize.query(sql);
+        const [data] = await sequelize.query(sql);
         return data;
     }
 
     async crearCompra(compra) {
-        var sql = `call crear_compra('${compra.fecha}',${compra.total},'${compra.proveedor}')`;
-        var data = await sequelize.query(sql);
+        var sql = `call crear_compra('${compra.proveedor}')`;
+        var [data] = await sequelize.query(sql);
         return data;
     }
 
-    async crearDetalleCompra(detalle) {
-        var sql = `call crear_detalle_detalle('${detalle.cantidad}',${detalle.precio},'${detalle.planta}',${detalle.compra})`;
-        var data = await sequelize.query(sql);
-        return data;
+    async crearDetalleCompra(datos) {
+        var sql = 'INSERT INTO plantas.detalle_compra (cantidad_compra, precio_compra, id_planta, id_compra) VALUES';
+        datos.map(async detalle => {
+
+            sql += `(${detalle.cantidad}, ${detalle.precio}, ${detalle.planta}, ${detalle.compra}),`;
+        })
+        var str = sql.substring(0, sql.length - 1);
+        str += ";";
+        const [data] = await sequelize.query(str);
+        return "exitoso";
     }
 
     async login(cliente) {
-        var [data] = await sequelize.query(`SELECT id_cliente as id, nombre_cliente as nombre, apellido1 as apellido,correo,contrasenia from cliente where correo='${cliente.correo}'`);
+        var [data] = await sequelize.query(`SELECT id_cliente as id, nombre_cliente as nombre, apellido1 as apellido,correo,contrasenia, id_rol as rol 
+from cliente where correo='${cliente.correo}'`);
 
         if (data[0].id!=0){
             if (cliente.contrasenia===data[0].contrasenia){
@@ -81,6 +88,15 @@ class PlantaService {
 
     async obtenerCategorias() {
         const [data] = await sequelize.query("select id_categoria as id,nombre_categoria as nombre from categoria");
+        return data;
+    }
+
+    async obtnenerProveedores(){
+        const [data] = await sequelize.query("SELECT " +
+            "id_proveedor as id, " +
+            "nombre_proveedor as nombre," +
+            "telefono_proveedor as telefono " +
+            "from proveedor");
         return data;
     }
 }

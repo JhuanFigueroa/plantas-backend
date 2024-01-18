@@ -17,7 +17,10 @@ router.get('/categorias',async function (req, res, next) {
   const categorias = await service.obtenerCategorias();
   res.json(categorias);
 })
-
+router.get('/proveedores',async function (req, res, next) {
+  const proveedores = await service.obtnenerProveedores();
+  res.json(proveedores);
+})
 router.get('/categoria/:id',async function (req, res, next) {
   const {id} = req.params;
   const plantas = await service.findCateforia(id);
@@ -35,8 +38,17 @@ router.post('/login',async function (req, res, next) {
     const cliente=await service.login(body);
     res.json(cliente);
 });
+router.post('/compra',async function (req, res, next) {
+  const body = req.body;
+  const newCompra= await service.crearCompra(body);
+  res.json(newCompra);
+});
 
-
+router.post('/detalle-compra',async function (req, res, next) {
+  const body = req.body;
+  const newCompra= await service.crearDetalleCompra(body);
+  res.json(newCompra);
+});
 
 router.post('/detalle-venta',async function (req, res, next) {
   const body = req.body;
@@ -55,17 +67,6 @@ router.get('/getVenta/:id',async function(req,res,next){
   const notaVenta=await service.getVenta(id);
   res.json(notaVenta);
 
-  router.post('/compra',async function (req, res, next) {
-    const body = req.body;
-    const newCompra= await service.crearCompra(body);
-    res.json(newCompra);
-  });
-
-  router.post('/detalle-compra',async function (req, res, next) {
-    const body = req.body;
-    const newCompra= await service.crearDetalleCompra(body);
-    res.json(newCompra);
-  });
 
 
 })
