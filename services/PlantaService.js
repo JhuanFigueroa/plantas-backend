@@ -7,6 +7,7 @@ class PlantaService {
     async find() {
         //const [data] = await sequilize.query('insert into admision values ('+data.numFicha+')')
         const data = await sequelize.query('call ver_plantas()')
+
         return data;
     }
 
